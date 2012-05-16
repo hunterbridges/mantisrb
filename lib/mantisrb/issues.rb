@@ -235,6 +235,24 @@ module Mantis
 
     private
 
+    def find_project(list, project_id)
+      result = nil
+      list.compact.each do |l| 
+        unless l.nil?
+          if l[:id].to_i == project_id.to_i
+            result ||= l 
+          elsif l[:subprojects].kind_of?(Hash)
+            if l[:subprojects][:item].kind_of?(Array)
+              result ||= find_project(l[:subprojects][:item], project_id)
+            elsif l[:subprojects][:item].kind_of?(Hash)
+              result ||= find_project([l[:subprojects][:item]], project_id)
+            end
+          end
+        end
+      end
+      result
+    end
+
     # User will pass in the name of a param, and this method will retrieve all
     # possible ObjectRef, AccountData, Attachments, Notes, and other types,
     # constructing the proper {Mantis::XSD::IssueData} class
@@ -245,13 +263,7 @@ module Mantis
           params[parm.to_sym] = val
         end
       }
-      if params[:project]
-        list = @session.projects.list
-        # this allows both an id and a name to be passed in, since it's looking
-        # at all values to match EXACTLY the value passed in.
-        project = list.select { |l| l.id == params[:project].to_s}[0]
-        params[:project] = project
-      end
+      params[:project] = find_project(@session.projects.list, params[:project]) if params[:project]
       params
     end # remap_params_for_issue_data
 
