@@ -3,7 +3,7 @@
 module Mantis
 
   # A Session is how you will perform requests to Mantis through the SOAP API.
-  # 
+  #
   # To create a session, simply pass in the URL to the Mantis server, username,
   # and password to use.  The user and pass that you provide will determine
   # what kinds of access you have to Mantis, what kinds of issues you can view,
@@ -15,7 +15,7 @@ module Mantis
   # From here, you can use your session to get access to the other parts of the
   # Mantis API, such as Filters, Configs, Issues and Projects.
   class Session
-    
+
     # By default, Mantis ships with MantisConnect at
     # "/api/soap/mantisconnect.php", with the WSDL endpoint being "?wsdl".
     SOAP_API = "/api/soap/mantisconnect.php?wsdl"
@@ -30,9 +30,9 @@ module Mantis
       @user = user
       @pass = pass
       @connection = Savon::Client.new do
-        wsdl.document = sanitize_api_url(url)
-        http.proxy = ENV['http_proxy'] if ENV['http_proxy']
-        http.auth.basic(http_user, http_pass)  if http_user && http_pass
+        wsdl sanitize_api_url(url)
+        proxy(ENV['http_proxy']) if ENV['http_proxy']
+        ssl_verify_mode :none
       end
     end
 
@@ -101,7 +101,7 @@ module Mantis
     # @param [String] url URL to clean
     # @return [String] A URL that should be just the mantis URL + SOAP endpoint
     def sanitize_api_url(url)
-      unless url.match(/\/api\//) 
+      unless url.match(/\/api\//)
         return url + SOAP_API
       end
       url
