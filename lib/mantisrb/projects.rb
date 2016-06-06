@@ -82,7 +82,7 @@ module Mantis
       # with a Hash to be consistent
       prjs = []
       if proj_list[0].class == Array
-        prjs += create_project_hash(proj_list) 
+        prjs += create_project_hash(proj_list)
       elsif proj_list.class == Array
         prjs += proj_list
       elsif proj_list.class == Hash
@@ -109,7 +109,7 @@ module Mantis
     # @return [Integer] id of the new Project record in Mantis
     def add(params)
       params = remap_params_for_project_data(params)
-      @session.response_trimmed :mc_project_add, 
+      @session.response_trimmed :mc_project_add,
         Mantis::XSD::ProjectData.new(params).document("project")
     end
 
@@ -142,8 +142,8 @@ module Mantis
     # @param [Integer] project_id
     def categories(project_id)
       @session.response_trimmed :mc_project_get_categories, {
-        :project_id => project_id,
-        :order! => [:project_id]
+        :project => project_id,
+        :order! => [:project]
       }
     end
 

@@ -29,10 +29,10 @@ module Mantis
       @url = url
       @user = user
       @pass = pass
-      @connection = Savon::Client.new do
-        wsdl sanitize_api_url(url)
-        proxy(ENV['http_proxy']) if ENV['http_proxy']
-        ssl_verify_mode :none
+      @connection = Savon::Client.new do |c|
+        c.wsdl sanitize_api_url(url)
+        c.proxy(ENV['http_proxy']) if ENV['http_proxy']
+        c.ssl_verify_mode :none
       end
     end
 
@@ -43,9 +43,7 @@ module Mantis
     # wrapped into <key>value</key> so nesting is encouraged.
     # @return [Hash] Raw response back from Mantis converted from XML to Hash.
     def response(request, params={})
-      @connection.request request do
-        soap.body = add_credentials(params)
-      end
+      @connection.call(request, message: add_credentials(params))
     end
 
     # Create a trimmed response from Mantis.  Mantis will generate alot of
