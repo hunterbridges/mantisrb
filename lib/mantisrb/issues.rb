@@ -104,7 +104,12 @@ module Mantis
       unless params.class == Mantis::XSD::IssueData
         params = map_params_to_issue_data(params)
       end
-      @session.response_trimmed :mc_issue_update, params.document("issue")
+      doc = params.document("issue")
+      id = Nokogiri::XML::Node.new "issueId", doc.root
+      id.content = issue_id
+      doc.root.before(id)
+      byebug
+      @session.response_trimmed :mc_issue_update, doc
     end
 
     # delete an issue

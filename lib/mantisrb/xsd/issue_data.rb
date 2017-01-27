@@ -58,7 +58,12 @@ module Mantis::XSD
               xml.name @status[:name]
             }
           end
-          # TODO: reporter (AccountData)
+          if @reporter
+            xml.reporter(:type => "tns:AccountData") {
+              xml.id_ @reporter[:id]
+              # xml.name @reporter[:name]
+            }
+          end
           xml.summary @summary if @summary
           xml.version @version if @version
           xml.build @build if @build
@@ -73,7 +78,12 @@ module Mantis::XSD
           end
           xml.date_submitted @date_submitted if @date_submitted
           xml.sponsorship_total @sponsorship_total if @sponsorship_total
-          # TODO: handler (AccountData)
+          if @handler
+            xml.handler(:type => "tns:AccountData") {
+              xml.id_ @handler[:id]
+              # xml.name @handler[:name]
+            }
+          end
           if @projection
             xml.projection(:type => "tns:ObjectRef") {
               xml.id_ @projection[:id]
@@ -101,7 +111,7 @@ module Mantis::XSD
           # TODO: relationships (RelationshipDataArray)
           # TODO: notes (IssueNoteDataArray)
           # TODO: custom_fields (CustomFieldValueForIssueDataArray)
-          xml.due_date @due_date if @due_date
+          # xml.due_date @due_date if @due_date
           # TODO: monitors (AccountDataArray)
         end
       }
