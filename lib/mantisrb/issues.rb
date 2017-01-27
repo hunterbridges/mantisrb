@@ -108,7 +108,6 @@ module Mantis
       id = Nokogiri::XML::Node.new "issueId", doc.root
       id.content = issue_id
       doc.root.before(id)
-      byebug
       @session.response_trimmed :mc_issue_update, doc
     end
 
@@ -264,7 +263,7 @@ module Mantis
     def remap_params_for_issue_data(params)
       %w{ view_state status reproducibility }.each { |parm|
         if(params[parm.to_sym])
-          val = @session.config.object_ref_for_value(parm, params[parm.to_sym])
+          val = @session.config.object_ref_for_value(parm.to_sym, params[parm.to_sym])
           params[parm.to_sym] = val
         end
       }
