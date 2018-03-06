@@ -33,6 +33,7 @@ module Mantis
         c.wsdl sanitize_api_url(url)
         c.proxy(ENV['http_proxy']) if ENV['http_proxy']
         c.ssl_verify_mode :none
+        c.convert_request_keys_to :none  # or one of [:lower_camelcase, :upcase, :none]
       end
     end
 
